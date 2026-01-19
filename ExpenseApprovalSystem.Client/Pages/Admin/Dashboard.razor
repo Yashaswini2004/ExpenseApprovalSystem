@@ -1,0 +1,122 @@
+@page "/admin/dashboard"
+@using ExpenseApprovalSystem.Client.Services
+@using ExpenseApprovalSystem.Contracts.AdminDTO
+@inject ExpenseApiService ExpenseApi
+@inject IJSRuntime JS
+@inject AuthStateService AuthState
+@inject NavigationManager Nav
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+    <h3>Admin Dashboard</h3>
+
+    <button class="btn btn-primary "
+            @onclick="GoToApproveExpenses">
+        Approve / Reject Expenses
+    </button>
+</div>
+
+@if (!AuthState.IsLoggedIn || AuthState.Role != "Admin")
+{
+    <p class="text-danger">Access denied</p>
+    return;
+}
+
+@if (dashboard == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="row mb-4 text-center">
+        <div class="col">
+            <div class="card shadow-sm p-3">
+                <h6>Pending</h6>
+                <h4>@dashboard.PendingCount</h4>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card shadow-sm p-3">
+                <h6>Approved</h6>
+                <h4>@dashboard.ApprovedCount</h4>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card shadow-sm p-3">
+                <h6>Rejected</h6>
+                <h4>@dashboard.RejectedCount</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-4 text-center">
+        <h5>
+            Weekly Total Expense:
+            <span class="fw-bold text-success">
+                ₹@dashboard.WeeklyTotalExpense
+            </span>
+        </h5>
+    </div>
+
+  
+    <div class="container-fluid ps-5">
+    <div class="row">
+
+        <div class="col-md-6 mb-4">
+            <h5 class="mb-3">Average Expense per Category</h5>
+            <canvas id="barChart"></canvas>
+        </div>
+
+        <div class="col-md-6 mb-4 ps-4">
+            <h5 class="mb-3">Total Expense by Category</h5>
+            <canvas id="pieChart"></canvas>
+        </div>
+
+    </div>
+</div>
+
+
+
+}
+
+@code {
+    AdminDashboardDto? dashboard;
+    bool chartsRendered = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        dashboard = await ExpenseApi.GetAdminDashboardAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!chartsRendered && dashboard != null)
+        {
+            chartsRendered = true;
+
+            var labels = dashboard.AverageByCategory
+                .Select(x => x.Category.ToString())
+                .ToArray();
+
+            var avgData = dashboard.AverageByCategory
+                .Select(x => (double)x.AverageAmount)
+                .ToArray();
+
+            var totalData = dashboard.AverageByCategory
+                .Select(x =>
+                    dashboard.MostExpenseCategory?.Category == x.Category
+                        ? (double)dashboard.MostExpenseCategory.TotalAmount
+                        : 0)
+                .ToArray();
+
+            await JS.InvokeVoidAsync("renderBarChart", labels, avgData);
+            await JS.InvokeVoidAsync("renderPieChart", labels, totalData);
+        }
+    }
+
+    private void GoToApproveExpenses()
+    {
+        Nav.NavigateTo("/admin/approve-expenses");
+    }
+}

@@ -1,0 +1,11 @@
+C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.Contracts\bin\Debug\net10.0\ExpenseApprovalSystem.Contracts.deps.json
+C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.Contracts\bin\Debug\net10.0\ExpenseApprovalSystem.Contracts.dll
+C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.Contracts\bin\Debug\net10.0\ExpenseApprovalSystem.Contracts.pdb
+C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.Contracts\obj\Debug\net10.0\ExpenseApprovalSystem.Contracts.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.Contracts\obj\Debug\net10.0\ExpenseApprovalSystem.Contracts.AssemblyInfoInputs.cache
+C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.Contracts\obj\Debug\net10.0\ExpenseApprovalSystem.Contracts.AssemblyInfo.cs
+C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.Contracts\obj\Debug\net10.0\ExpenseApprovalSystem.Contracts.csproj.CoreCompileInputs.cache
+C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.Contracts\obj\Debug\net10.0\ExpenseApprovalSystem.Contracts.dll
+C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.Contracts\obj\Debug\net10.0\refint\ExpenseApprovalSystem.Contracts.dll
+C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.Contracts\obj\Debug\net10.0\ExpenseApprovalSystem.Contracts.pdb
+C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.Contracts\obj\Debug\net10.0\ref\ExpenseApprovalSystem.Contracts.dll

@@ -1,0 +1,74 @@
+@page "/employee/submit-expense"
+
+@using ExpenseApprovalSystem.Client.Services
+@using ExpenseApprovalSystem.Contracts.EmployeeDTO
+@using ExpenseApprovalSystem.Contracts.Enums
+
+@inject ExpenseApiService ExpenseApi
+@inject NavigationManager Nav
+@inject AuthStateService AuthState
+
+<h3 class="text-center mb-4">Submit Expense</h3>
+
+@if (!AuthState.IsLoggedIn || AuthState.Role != "Employee")
+{
+    <p class="text-danger">Access denied</p>
+    return;
+}
+
+<div class="d-flex justify-content-center align-items-center py-5">
+    <div class="card p-3 shadow-sm" style="max-width: 500px; width: 100%;">
+
+        <input class="form-control mb-2"
+               placeholder="Title"
+               @bind="model.Title" />
+
+        <input class="form-control mb-2"
+               type="number"
+               placeholder="Amount"
+               @bind="model.Amount" />
+
+        <select class="form-control mb-2"
+                @bind="model.Category">
+            @foreach (ExpenseCategory c in Enum.GetValues(typeof(ExpenseCategory)))
+            {
+                <option value="@c">@c</option>
+            }
+        </select>
+
+       <div class="mb-3">
+    <label class="form-label fw-semibold">
+        Expense Spent Date
+    </label>
+    <input class="form-control"
+           type="date"
+           max="@DateTime.Today.ToString("yyyy-MM-dd")"
+           @bind="model.ExpenseDate" />
+</div>
+
+        <button class="btn btn-primary w-100"
+                @onclick="Submit">
+            Submit Expense
+        </button>
+
+    </div>
+</div>
+
+
+@code {
+    private SubmitExpenseDto model = new()
+    {
+        ExpenseDate = DateTime.Today
+    };
+
+    private async Task Submit()
+    {
+        
+        await ExpenseApi.SubmitExpenseAsync(
+            model,
+            AuthState.EmployeeId
+        );
+
+        Nav.NavigateTo("/employee/expenses");
+    }
+}

@@ -1,0 +1,50 @@
+﻿@inject AuthStateService AuthState
+@inject NavigationManager Nav
+
+<nav class="navbar shadow-sm w-100"
+     style="height: 15vh; background-color: #409fe4;">
+    <div class="container-fluid h-100 d-flex align-items-center">
+
+        <span class="navbar-brand fw-semibold text-white ms-3">
+            Expense Approval System
+        </span>
+
+        @if (!AuthState.IsLoggedIn)
+        {
+            <button class="btn btn-primary me-3 ms-auto"
+                    @onclick="GoToLogin">
+                Login
+            </button>
+        }
+        else
+        {
+            <button class="btn btn-danger me-3 ms-auto"
+                    @onclick="Logout">
+                Logout
+            </button>
+        }
+    </div>
+</nav>
+
+@code {
+    protected override void OnInitialized()
+    {
+        AuthState.OnChange += StateHasChanged;
+    }
+
+    private void GoToLogin()
+    {
+        Nav.NavigateTo("/login");
+    }
+
+    private void Logout()
+    {
+        AuthState.Logout();
+        Nav.NavigateTo("/login", true);
+    }
+
+    public void Dispose()
+    {
+        AuthState.OnChange -= StateHasChanged;
+    }
+}

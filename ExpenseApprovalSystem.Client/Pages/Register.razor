@@ -1,0 +1,58 @@
+@page "/register"
+@using ExpenseApprovalSystem.Client.Services
+@using ExpenseApprovalSystem.Contracts.AuthDTO
+@inject AuthApiService AuthApi
+@inject NavigationManager Nav
+
+<div class="d-flex justify-content-center align-items-center"
+     style="min-height: 100vh; background-color: #f8f9fa;">
+
+    <div class="card shadow p-4" style="width: 380px;">
+        <h4 class="text-center mb-4">Create Account</h4>
+
+        <input class="form-control mb-3"
+               placeholder="Full Name"
+               @bind="model.Name" />
+
+        <input class="form-control mb-3"
+               placeholder="Email"
+               @bind="model.Email" />
+
+        <input class="form-control mb-4"
+               type="password"
+               placeholder="Password"
+               @bind="model.Password" />
+
+        <button class="btn btn-success w-100"
+                @onclick="HandleRegister">
+            Register
+        </button>
+
+        <div class="text-center mt-3">
+            <small>
+                Already have an account?
+                <a href="/login">Login</a>
+            </small>
+        </div>
+    </div>
+</div>
+
+@if (message != null)
+{
+    <p class="text-success">@message</p>
+}
+
+@code {
+    RegisterDto model = new();
+    string? message;
+
+    private async Task HandleRegister()
+    {
+        var success = await AuthApi.RegisterAsync(model);
+        if (success)
+        {
+           Nav.NavigateTo("/login");
+
+        }
+    }
+}

@@ -1,0 +1,87 @@
+@page "/login"
+
+@using ExpenseApprovalSystem.Client.Services
+@using ExpenseApprovalSystem.Contracts.AuthDTO
+
+@inject AuthApiService AuthApi
+@inject AuthStateService AuthState
+@inject NavigationManager Nav
+
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg p-4 login-card"
+         style="width: 380px; border-radius: 14px;">
+
+        <h3 class="text-center mb-4">Login</h3>
+
+        <input class="form-control mb-3"
+               placeholder="Email"
+               @bind="login.Email" />
+
+        <input class="form-control mb-3"
+               type="password"
+               placeholder="Password"
+               @bind="login.Password" />
+
+        <button class="btn btn-primary w-100 mt-2"
+                @onclick="HandleLogin">
+            Login
+        </button>
+
+        <div class="text-center mt-3">
+            <span>New user?</span>
+            <a href="javascript:void(0)"
+               class="ms-1 text-decoration-none fw-semibold"
+               @onclick="HandleRegister">
+                Register here
+            </a>
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <div class="alert alert-danger mt-2 text-center">
+        @error
+    </div>
+}
+
+@code {
+    private LoginDto login = new();
+    private string? error;
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            error = null;
+
+            var result = await AuthApi.LoginAsync(login);
+
+            if (result == null)
+            {
+                error = "Invalid email or password";
+                return;
+            }
+
+            AuthState.Login(
+                result.UserId,
+                result.Name ?? "",
+                result.Role
+            );
+
+            if (result.Role == "Admin")
+                Nav.NavigateTo("/admin/dashboard");
+            else
+                Nav.NavigateTo("/employee/expenses");
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+
+    private void HandleRegister()
+    {
+        Nav.NavigateTo("/register");
+    }
+}

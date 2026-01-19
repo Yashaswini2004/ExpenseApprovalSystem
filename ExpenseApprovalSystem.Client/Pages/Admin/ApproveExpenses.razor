@@ -1,0 +1,101 @@
+@page "/admin/approve-expenses"
+
+@using ExpenseApprovalSystem.Client.Services
+@using ExpenseApprovalSystem.Contracts.AdminDTO
+@using ExpenseApprovalSystem.Contracts.Enums
+
+@inject ExpenseApiService ExpenseApi
+@inject AuthStateService AuthState
+
+<h3 class="mb-4">Approve Expenses</h3>
+
+@if (!AuthState.IsLoggedIn || AuthState.Role != "Admin")
+{
+    <p class="text-danger">Access denied</p>
+    return;
+}
+
+@if (expenses == null)
+{
+    <p>Loading...</p>
+}
+else if (!expenses.Any())
+{
+    <div class="alert alert-info text-center">
+        No pending expenses
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (AdminPendingExpenseDto e in expenses)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            @e.EmployeeName
+                        </h5>
+
+                        <p class="mb-1">
+                            <b>Category:</b> @e.Category
+                        </p>
+
+                        <p class="mb-1">
+                            <b>Amount:</b> ₹ @e.Amount
+                        </p>
+
+                        <p class="mb-1">
+                            <b>Date:</b> @e.ExpenseDate.ToShortDateString()
+                        </p>
+
+                        <p class="mb-3">
+                            <b>Status:</b>
+                            <span class="badge bg-warning text-dark">
+                                @e.Status
+                            </span>
+                        </p>
+
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-success btn-sm"
+                                    @onclick="() => Approve(e.ExpenseId)">
+                                Approve
+                            </button>
+
+                            <button class="btn btn-danger btn-sm"
+                                    @onclick="() => Reject(e.ExpenseId)">
+                                Reject
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<AdminPendingExpenseDto>? expenses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var dashboard = await ExpenseApi.GetAdminDashboardAsync();
+        expenses = dashboard.PendingExpenses;
+    }
+
+    private async Task Approve(int expenseId)
+    {
+        await ExpenseApi.ApproveExpenseAsync(expenseId, null);
+        var dashboard = await ExpenseApi.GetAdminDashboardAsync();
+        expenses = dashboard.PendingExpenses;
+    }
+
+    private async Task Reject(int expenseId)
+    {
+        await ExpenseApi.RejectExpenseAsync(expenseId, null);
+        var dashboard = await ExpenseApi.GetAdminDashboardAsync();
+        expenses = dashboard.PendingExpenses;
+    }
+}

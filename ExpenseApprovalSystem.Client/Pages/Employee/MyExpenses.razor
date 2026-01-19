@@ -1,0 +1,106 @@
+@page "/employee/expenses"
+
+@using ExpenseApprovalSystem.Client.Services
+@using ExpenseApprovalSystem.Contracts.AdminDTO
+@using ExpenseApprovalSystem.Contracts.EmployeeDTO
+@using ExpenseApprovalSystem.Contracts.Enums
+
+@inject ExpenseApiService ExpenseApi
+@inject AuthStateService AuthState
+@inject NavigationManager Nav
+
+<h3 class="text-center mb-3 mt-3">My Expenses</h3>
+
+@if (!AuthState.IsLoggedIn || AuthState.Role != "Employee")
+{
+    <div class="text-center mt-4">
+        <p class="text-danger fw-semibold">Access denied</p>
+    </div>
+    return;
+}
+<div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-primary"
+            @onclick="GoToSubmitExpense">
+        ➕ Submit Expense
+    </button>
+</div>
+
+@if (expenses == null)
+{
+    <div class="text-center">
+        <p>Loading...</p>
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-center">
+        <div style="width: 100%; max-width: 900px;">
+
+            <h5>⏳ Pending</h5>
+            @ExpenseTable(ExpenseStatus.Pending)
+
+            <h5 class="mt-4">✅ Approved</h5>
+            @ExpenseTable(ExpenseStatus.Approved)
+
+            <h5 class="mt-4">❌ Rejected</h5>
+            @ExpenseTable(ExpenseStatus.Rejected)
+
+        </div>
+    </div>
+}
+
+
+@code {
+    private List<ExpenseDto>? expenses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            expenses = await ExpenseApi.GetMyExpensesAsync(
+                AuthState.EmployeeId
+            );
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            expenses = new List<ExpenseDto>(); 
+        }
+    }
+
+    private void GoToSubmitExpense()
+    {
+        Nav.NavigateTo("/employee/submit-expense");
+    }
+
+    RenderFragment ExpenseTable(ExpenseStatus status) => @<table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in expenses!.Where(x => x.Status == status))
+            {
+                <tr>
+                    <td>@e.Title</td>
+                    <td>₹ @e.Amount</td>
+                    <td>@e.Category</td>
+                    <td>@e.Status</td>
+                </tr>
+            }
+
+            @if (!expenses!.Any(x => x.Status == status))
+            {
+                <tr>
+                    <td colspan="4" class="text-center">
+                        No records
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>;
+}
