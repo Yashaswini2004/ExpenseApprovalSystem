@@ -161,3 +161,4 @@ C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.API\obj\Debu
 C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.API\obj\Debug\net10.0\ExpenseApprovalSystem.Server.pdb
 C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.API\obj\Debug\net10.0\ExpenseApprovalSystem.Server.genruntimeconfig.cache
 C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.API\obj\Debug\net10.0\ref\ExpenseApprovalSystem.Server.dll
+C:\Users\304561\Desktop\ExpenseApprovalSystem\ExpenseApprovalSystem.API\obj\Debug\net10.0\ExpenseApprovalSystem.Server.sourcelink.json

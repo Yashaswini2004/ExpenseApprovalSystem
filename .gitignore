@@ -1,0 +1,22 @@
+# Build folders
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
+
+# Visual Studio
+.vs/
+
+# .NET
+project.assets.json
+project.nuget.cache
